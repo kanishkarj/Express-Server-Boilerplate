@@ -1,0 +1,11 @@
+"use strict";
+exports.__esModule = true;
+var standard_1 = require("./middlewares/standard");
+var HomeController = require("./controller/home");
+var express = require('express');
+var app = express();
+app.use(standard_1.CORS);
+app.use(standard_1.jsonParser);
+app.use(standard_1.urlEncoder);
+app.get('/', HomeController.index);
+exports["default"] = app;

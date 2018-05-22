@@ -1,9 +1,8 @@
-import express = require('express');
-const app = express();
+const dotenv = require("dotenv");
 
-// require('dotenv').config();
+import app from './src/routes';
 
-app.use('/',(req,res)=>{return res.send("sdf")});
+dotenv.config({ path: ".env.example" });
 
 app.listen(5000);
 

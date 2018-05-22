@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
-var express = require("express");
-var app = express();
-app.use('/', function (req, res) { return res.send("sdf"); });
-app.listen(5000);
-exports["default"] = app;
+var dotenv = require("dotenv");
+var routes_1 = require("./src/routes");
+dotenv.config({ path: ".env.example" });
+routes_1["default"].listen(5000);
+exports["default"] = routes_1["default"];
