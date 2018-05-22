@@ -1,0 +1,33 @@
+{
+  "name": "express-server-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch": "concurrently --kill-others \"tsc -w\" \"nodemon dist/app.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kanishkarj/Express-Server-Boilerplate.git"
+  },
+  "author": "kanishkarj",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kanishkarj/Express-Server-Boilerplate/issues"
+  },
+  "homepage": "https://github.com/kanishkarj/Express-Server-Boilerplate#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "passport": "^0.4.0",
+    "typescript": "^2.8.3"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/express": "^4.11.1",
+    "@types/passport": "^0.4.5",
+    "concurrently": "^3.5.1",
+    "nodemon": "^1.17.4"
+  }
+}
