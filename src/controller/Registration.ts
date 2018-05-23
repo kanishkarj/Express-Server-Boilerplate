@@ -1,19 +1,20 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Controllers, Middlewares } from "../config/interfaces";
 import { check, validationResult} from 'express-validator/check';
-import User from "../models/user";
+import User, { AuthToken } from "../models/user";
+import { WriteError } from "mongodb";
 /**
  * GET /
  * Home page.
  */
-export let index: Middlewares = (req: Request, res: Response, next: any) => {
+export let SignUpEmail: Middlewares = (req: Request, res: Response, next: NextFunction) => {
     const user = new User(req.body)
     
     User.findOne({ email: req.body.email }, (err, existingUser) => {
         if (err) { return next(err); }
         if (existingUser) {
-          req.flash("errors", "Account with that email address already exists.");
-          return res.redirect("/signup");
+            res.status(500);
+            return res.send("The EmailId already exists");
         }
         user.save((err) => {
           if (err) { return next(err); }
@@ -25,6 +26,18 @@ export let index: Middlewares = (req: Request, res: Response, next: any) => {
           });
         });
     });
-    
-    return res.json(req.body);
 };
+
+export let getOauthUnlink: Middlewares = (req: Request, res: Response, next: NextFunction) => {
+    const provider = req.params.provider;
+    User.findById(req.user.id, (err, user: any) => {
+      if (err) { return next(err); }
+      user[provider] = undefined;
+      user.tokens = user.tokens.filter((token: AuthToken) => token.kind !== provider);
+      user.save((err: WriteError) => {
+        if (err) { return next(err); }
+        req.flash("info", `${provider} account has been unlinked.`);
+        res.redirect("/account");
+      });
+    });
+  };

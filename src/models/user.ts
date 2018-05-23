@@ -24,14 +24,14 @@ export type UserModel = Mongoose.Document  & {
     gravatar: (size: number) => string
   };
   
-  type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+  type comparePasswordFunction = (user: UserModel,candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
   
   export type AuthToken = {
     accessToken: string,
     kind: string
   };
   
-  const userSchema = new Mongoose.Schema({
+ const userSchema = new Mongoose.Schema({
     email: { type: String, unique: true },
     password: String,
     passwordResetToken: String,
@@ -67,8 +67,8 @@ export type UserModel = Mongoose.Document  & {
     });
   });
   
-  const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, (err: Mongoose.Error, isMatch: boolean) => {
+  const comparePassword: comparePasswordFunction = function (user:UserModel,candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, user.password, (err: Mongoose.Error, isMatch: boolean) => {
       cb(err, isMatch);
     });
   };
@@ -91,4 +91,5 @@ export type UserModel = Mongoose.Document  & {
   
   // export const User: UserType = mongoose.model<UserType>('User', userSchema);
   const User = Mongoose.model("User", userSchema);
+  export let UserSchema = userSchema;
   export default User;
