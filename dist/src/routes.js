@@ -2,10 +2,13 @@
 exports.__esModule = true;
 var standard_1 = require("./middlewares/standard");
 var HomeController = require("./controller/home");
+var RegistrationController = require("./controller/Registration");
 var express = require('express');
 var app = express();
 app.use(standard_1.CORS);
 app.use(standard_1.jsonParser);
 app.use(standard_1.urlEncoder);
+app.use(standard_1.expressFlash());
 app.get('/', HomeController.index);
+app.post('/signup', RegistrationController.index);
 exports["default"] = app;

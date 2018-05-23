@@ -1,7 +1,12 @@
 "use strict";
 exports.__esModule = true;
 var dotenv = require("dotenv");
+var mongoose = require('mongoose');
 var routes_1 = require("./src/routes");
-dotenv.config({ path: ".env.example" });
-routes_1["default"].listen(5000);
+dotenv.config({ path: "env.example" });
+process.env.NODE_ENV = 'development';
+mongoose.connect("mongodb://localhost:27017");
+require('./src/models');
+require('./src/config/passport');
+routes_1["default"].listen(process.env.PORT);
 exports["default"] = routes_1["default"];
