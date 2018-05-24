@@ -1,5 +1,7 @@
-import { jsonParser,urlEncoder,CORS,expressFlash } from './middlewares/standard';
 import * as passport from 'passport';
+
+import { jsonParser,urlEncoder,CORS,expressFlash, ValidationMiddleware, Auth } from './middlewares/standard';
+import { UserRegPostVal, UserLoginPostVal } from './config/validators';
 
 import * as HomeController from './controller/home';
 import * as RegistrationController from './controller/Registration';
@@ -16,8 +18,9 @@ app.use(passport.initialize());
 
 app.get('/',HomeController.index)
 
-app.post('/signup',RegistrationController.SignUpEmail)
-app.post('/login',LoginController.LogInEmail)
+app.post('/signup',UserRegPostVal,ValidationMiddleware,RegistrationController.SignUpEmail)
+app.post('/login',UserLoginPostVal,ValidationMiddleware,LoginController.LogInEmail)
+app.post('/check',Auth,HomeController.index)
 app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "public_profile"] }));
 // app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
 //   res.redirect(req.session.returnTo || "/");

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { Controllers, Middlewares } from "../config/interfaces";
-import { check, validationResult} from 'express-validator/check';
 import User, { AuthToken } from "../models/user";
 import { WriteError } from "mongodb";
 /**
@@ -9,23 +8,16 @@ import { WriteError } from "mongodb";
  */
 export let SignUpEmail: Middlewares = (req: Request, res: Response, next: NextFunction) => {
     const user = new User(req.body)
-    
-    User.findOne({ email: req.body.email }, (err, existingUser) => {
-        if (err) { return next(err); }
-        if (existingUser) {
-            res.status(500);
-            return res.send("The EmailId already exists");
+    user.save((err) => {
+      if (err) { return next(err); }
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
         }
-        user.save((err) => {
-          if (err) { return next(err); }
-          req.logIn(user, (err) => {
-            if (err) {
-              return next(err);
-            }
-            return res.redirect("/");
-          });
-        });
+        return res.redirect("/");
+      });
     });
+
 };
 
 export let getOauthUnlink: Middlewares = (req: Request, res: Response, next: NextFunction) => {

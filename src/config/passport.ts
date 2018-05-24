@@ -4,6 +4,9 @@ const request = require("request");
 const passportLocal = require("passport-local");
 const passportFacebook = require("passport-facebook");
 const _ = require("lodash");
+const passportJWT = require("passport-jwt");
+const JWTStrategy   = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
 
 // import { User, UserType } from '../models/User';
 import { default as User, UserModel,UserSchema } from "../models/user";
@@ -144,3 +147,21 @@ export let isAuthorized = (req: Request, res: Response, next: NextFunction) => {
     res.redirect(`/auth/${provider}`);
   }
 };
+
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+  secretOrKey   : 'your_jwt_secret'
+},
+function (jwtPayload:any, cb:any) {
+  console.log(jwtPayload._id)
+  //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
+  User.findOne({'_id':jwtPayload._id.toString()})
+      .then(user => {
+          return cb(null, user);
+      })
+      .catch(err => {
+          return cb(err);
+      });
+}
+));
+
