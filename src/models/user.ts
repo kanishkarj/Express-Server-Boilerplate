@@ -8,10 +8,10 @@ export type UserModel = Mongoose.Document  & {
     password: string,
     passwordResetToken: string,
     passwordResetExpires: Date,
-  
+
     facebook: string,
     tokens: AuthToken[],
-  
+
     profile: {
       name: string,
       gender: string,
@@ -19,29 +19,29 @@ export type UserModel = Mongoose.Document  & {
       website: string,
       picture: string
     },
-  
+
     comparePassword: comparePasswordFunction,
     gravatar: (size: number) => string
   };
-  
+
   type comparePasswordFunction = (user: UserModel,candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
-  
+
   export type AuthToken = {
     accessToken: string,
     kind: string
   };
-  
+
  const userSchema = new Mongoose.Schema({
     email: { type: String, unique: true },
     password: String,
     passwordResetToken: String,
     passwordResetExpires: Date,
-  
+
     facebook: String,
     twitter: String,
     google: String,
     tokens: Array,
-  
+
     profile: {
       name: String,
       gender: String,
@@ -50,7 +50,7 @@ export type UserModel = Mongoose.Document  & {
       picture: String
     }
   }, { timestamps: true });
-  
+
   /**
    * Password hash middleware.
    */
@@ -66,15 +66,19 @@ export type UserModel = Mongoose.Document  & {
       });
     });
   });
-  
+
   const comparePassword: comparePasswordFunction = function (user:UserModel,candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, user.password, (err: Mongoose.Error, isMatch: boolean) => {
-      cb(err, isMatch);
-    });
+    try {
+      bcrypt.compare(candidatePassword, user.password, (err: Mongoose.Error, isMatch: boolean) => {
+        cb(err, isMatch);
+      });
+    } catch (err) {
+      return cb("Internal Error",false)
+    }
   };
-  
+
   userSchema.methods.comparePassword = comparePassword;
-  
+
   /**
    * Helper method for getting user's gravatar.
    */
@@ -88,7 +92,7 @@ export type UserModel = Mongoose.Document  & {
     const md5 = crypto.createHash("md5").update(this.email).digest("hex");
     return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
   };
-  
+
   // export const User: UserType = mongoose.model<UserType>('User', userSchema);
   const User = Mongoose.model("User", userSchema);
   export let UserSchema = userSchema;

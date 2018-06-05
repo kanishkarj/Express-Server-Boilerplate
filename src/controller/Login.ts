@@ -11,16 +11,15 @@ import * as jwt from 'jsonwebtoken';
  * Home page.
  */
 export let LogInEmail: Middlewares = (req: Request, res: Response, next: NextFunction) => {
-  passport.authenticate("local", (err: Error, user: UserModel, info: IVerifyOptions) => {
-    if (err) { return next(err); }
-    if (!user) {
-        return res.send(info.message);
-    }
-    req.logIn(user, (err) => {
+    passport.authenticate("local", (err: Error, user: UserModel, info: IVerifyOptions) => {
       if (err) { return next(err); }
-      const token = jwt.sign(user.toObject(), 'your_jwt_secret');
-      return res.json({user,token});
-    });
-})(req, res, next);
+      if (!user) {
+          return res.send(info.message);
+      }
+      req.logIn(user, (err) => {
+        if (err) { return next(err); }
+        const token = jwt.sign(user.toObject(), 'your_jwt_secret');
+        return res.json({user,token});
+      });
+  })(req, res, next);
 };
-

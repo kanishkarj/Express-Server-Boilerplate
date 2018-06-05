@@ -7,6 +7,7 @@ import { WriteError } from "mongodb";
  * Home page.
  */
 export let SignUpEmail: Middlewares = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req.body)
     const user = new User(req.body)
     user.save((err) => {
       if (err) { return next(err); }
